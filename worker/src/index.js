@@ -67,7 +67,7 @@ export default {
       const rawEmail = [
         'MIME-Version: 1.0',
         'From: Khibra Contact <noreply@khibra.org>',
-        'To: contact@khibra.org',
+        'To: isct.center@gmail.com',
         `Reply-To: ${email}`,
         `Subject: ${encodedSubject}`,
         'Content-Type: text/html; charset=utf-8',
@@ -75,7 +75,7 @@ export default {
         htmlBody,
       ].join('\r\n');
 
-      const emailMsg = new EmailMessage('noreply@khibra.org', 'contact@khibra.org', rawEmail);
+      const emailMsg = new EmailMessage('noreply@khibra.org', 'isct.center@gmail.com', rawEmail);
       await env.SEB.send(emailMsg);
 
       return new Response(
