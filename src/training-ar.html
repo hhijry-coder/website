@@ -508,7 +508,31 @@
           btn.style.opacity = '0.7';
 
           try {
-            const formData = new FormData(trainingForm);
+            // Compose all training fields into a single 'message' for the Cloudflare Worker
+            const pkg = document.getElementById('trainPackage').value || 'غير محدد';
+            const participants = document.getElementById('trainParticipants').value || 'غير محدد';
+            const preferredDate = document.getElementById('trainDate').value || 'غير محدد';
+            const notes = document.getElementById('trainNotes').value || 'لا يوجد';
+
+            const composedMessage = [
+              '--- طلب عرض سعر تدريبي ---',
+              '',
+              'الباقة التدريبية: ' + pkg,
+              'عدد المشاركين: ' + participants,
+              'تاريخ البدء المفضل: ' + preferredDate,
+              '',
+              'ملاحظات إضافية:',
+              notes
+            ].join('\n');
+
+            // Build FormData with fields the Cloudflare Worker expects
+            const formData = new FormData();
+            formData.append('name', document.getElementById('trainName').value);
+            formData.append('email', document.getElementById('trainEmail').value);
+            formData.append('organization', document.getElementById('trainOrg').value);
+            formData.append('phone', document.getElementById('trainPhone').value || '');
+            formData.append('message', composedMessage);
+
             const response = await fetch('https://khibra-contact-form.hhegri.workers.dev', {
               method: 'POST',
               body: formData,
