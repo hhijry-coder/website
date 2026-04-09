@@ -56,6 +56,40 @@
     </div>
   </header>
 
+  <!-- Image Slideshow -->
+  <section class="slideshow-section" id="trainingSlideshow">
+    <div class="slideshow-container">
+      <div class="slideshow-slide active">
+        <img src="assets/images/photo1.jpeg" alt="Training session 1">
+      </div>
+      <div class="slideshow-slide">
+        <img src="assets/images/photo2.jpeg" alt="Training session 2">
+      </div>
+      <div class="slideshow-slide">
+        <img src="assets/images/photo3.jpeg" alt="Training session 3">
+      </div>
+      <div class="slideshow-slide">
+        <img src="assets/images/photo4.jpeg" alt="Training session 4">
+      </div>
+
+      <!-- Navigation Arrows -->
+      <button class="slideshow-arrow slideshow-arrow--prev" aria-label="Previous slide" onclick="slideshowPrev()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="slideshow-arrow slideshow-arrow--next" aria-label="Next slide" onclick="slideshowNext()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <!-- Dots -->
+      <div class="slideshow-dots">
+        <button class="slideshow-dot active" aria-label="Go to slide 1" onclick="slideshowGoTo(0)"></button>
+        <button class="slideshow-dot" aria-label="Go to slide 2" onclick="slideshowGoTo(1)"></button>
+        <button class="slideshow-dot" aria-label="Go to slide 3" onclick="slideshowGoTo(2)"></button>
+        <button class="slideshow-dot" aria-label="Go to slide 4" onclick="slideshowGoTo(3)"></button>
+      </div>
+    </div>
+  </section>
+
   <!-- Section Toggle -->
   <section class="section">
     <div class="training-toggle-container">
@@ -467,6 +501,59 @@
 
   <script src="script.js"></script>
   <script>
+    // ==================== SLIDESHOW ====================
+    (function() {
+      let currentSlide = 0;
+      let autoplayTimer = null;
+      const INTERVAL = 4000; // 4 seconds
+
+      const slides = document.querySelectorAll('.slideshow-slide');
+      const dots = document.querySelectorAll('.slideshow-dot');
+      const container = document.querySelector('.slideshow-container');
+
+      if (!slides.length) return;
+
+      function goToSlide(index) {
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        currentSlide = (index + slides.length) % slides.length;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+      }
+
+      function nextSlide() { goToSlide(currentSlide + 1); }
+      function prevSlide() { goToSlide(currentSlide - 1); }
+
+      function startAutoplay() {
+        stopAutoplay();
+        autoplayTimer = setInterval(nextSlide, INTERVAL);
+      }
+
+      function stopAutoplay() {
+        if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+      }
+
+      // Pause on hover, resume on leave
+      if (container) {
+        container.addEventListener('mouseenter', stopAutoplay);
+        container.addEventListener('mouseleave', startAutoplay);
+      }
+
+      // Expose to inline onclick handlers
+      window.slideshowNext = function() { nextSlide(); startAutoplay(); };
+      window.slideshowPrev = function() { prevSlide(); startAutoplay(); };
+      window.slideshowGoTo = function(i) { goToSlide(i); startAutoplay(); };
+
+      // Keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') { nextSlide(); startAutoplay(); }
+        if (e.key === 'ArrowLeft') { prevSlide(); startAutoplay(); }
+      });
+
+      // Start
+      startAutoplay();
+    })();
+
     // Training page section toggle
     function showSection(section) {
       const standardSection = document.getElementById('standardSection');
